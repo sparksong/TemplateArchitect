@@ -1,0 +1,32 @@
+<div class="container">
+    <h3 class="center">Choose a template</h3>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4">
+                <select ng-model="vm.templateChoice.template_id">
+                    <option value="">Template Choice</option>
+                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                </select>
+            </div>
+            <div class="col-xs-4">
+                <select ng-model="vm.templateChoice.template_id">
+                    <option value="">Guest List</option>
+                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                </select>
+            </div>
+            <div class="col-xs-4">
+                <select ng-model="vm.templateChoice.template_id">
+                    <option value="">Company</option>
+                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="container outputData">
+        <div class="row">
+            <div class="col-xs-4">
+                <p>Test - Output data goes here.</p>
+            </div>
+        </div>
+    </div>
+</div>

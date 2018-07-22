@@ -1,0 +1,19 @@
+{
+  "name": "TemplateArchitect",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/server.js"
+  },
+  "keywords": [],
+  "author": "Justin Frederiksen",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.7.2",
+    "angular-route": "^1.7.2",
+    "bootstrap": "^4.1.2",
+    "express": "^4.16.3"
+  }
+}
