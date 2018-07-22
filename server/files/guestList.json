@@ -1,0 +1,16 @@
+{
+    "guestListArray": [{
+            "id": 1,
+            "firstName": "John",
+            "lastName": "Titor",
+            "addressLineOne": "",
+            "addressLineTwo": "",
+            "city": "",
+            "stateOrProvince": "",
+            "postalCode": "",
+            "phone": "",
+            "roomNumber": ""
+        }
+
+    ]
+}

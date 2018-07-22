@@ -1,0 +1,31 @@
+{
+    "templateListArray": [{
+            "id": 1,
+            "title": "Welcome Template",
+            "customerName": "",
+            "start": "",
+            "companyName": ""
+        },
+        {
+            "id": 2,
+            "title": "Welcome Template2",
+            "customerName": "",
+            "start": "",
+            "companyName": ""
+        },
+        {
+            "id": 3,
+            "title": "Issue Template",
+            "customerName": "",
+            "start": "",
+            "companyName": ""
+        },
+        {
+            "id": 4,
+            "title": "Exit Template",
+            "customerName": "",
+            "start": "",
+            "companyName": ""
+        }
+    ]
+}
