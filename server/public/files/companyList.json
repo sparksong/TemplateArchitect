@@ -1,0 +1,11 @@
+[{
+        "id": 1,
+        "companyName": "Hotel California",
+        "companyPhone": "612-855-1234"
+    },
+    {
+        "id": 2,
+        "companyName": "The Best Hotel",
+        "companyPhone": "952-111-1112"
+    }
+]

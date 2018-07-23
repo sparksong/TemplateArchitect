@@ -1,31 +1,37 @@
-<div class="container">
-    <h3 class="center">Choose a template</h3>
+<div class="container containerBorder">
+    <h3 class="centered">Choose a template</h3>
+    <hr>
     <div class="container">
         <div class="row">
-            <div class="col-xs-4">
-                <select ng-model="vm.templateChoice.template_id">
+            <div class="col-xs-12 dropDown">
+                <select ng-model="vm.templateChoice">
                     <option value="">Template Choice</option>
-                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                    <option ng-repeat="template in vm.templateList.list" value="{{template}}" required>{{template.title}}</option>
                 </select>
             </div>
-            <div class="col-xs-4">
-                <select ng-model="vm.templateChoice.template_id">
+            <div class="col-xs-12 dropDown">
+                <select ng-model="vm.guestChoice">
                     <option value="">Guest List</option>
-                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                    <option ng-repeat="guest in vm.guestList.list" value="{{guest}}">{{guest.firstName + ' ' + guest.lastName}}</option>
                 </select>
             </div>
-            <div class="col-xs-4">
-                <select ng-model="vm.templateChoice.template_id">
+            <div class="col-xs-12 dropDown">
+                <select ng-model="vm.companyChoice">
                     <option value="">Company</option>
-                    <option ng-repeat="template in vm.templateList.list" value="{{template.id}}">{{template.title}}</option>
+                    <option ng-repeat="company in vm.companyList.list" value="{{company}}">{{company.companyName}}</option>
                 </select>
+            </div>
+            <div class="col-xs-12">
+                <input type="button" class="btn btn-outline-success btn-sm" value="Generate output" ng-click="vm.generateOutput(vm.templateChoice, vm.guestChoice, vm.companyChoice)"
+                />
             </div>
         </div>
     </div>
     <div class="container outputData">
         <div class="row">
             <div class="col-xs-4">
-                <p>Test - Output data goes here.</p>
+                <p>Output: </p>
+                <p>{{vm.output}}</p>
             </div>
         </div>
     </div>

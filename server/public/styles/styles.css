@@ -1,5 +1,19 @@
-.header {
+.containerBorder {
+    border: 2px solid black;
+    width: 50%;
+    padding: 2%;
+}
+
+.centered {
     text-align: center;
+}
+
+.dropDown {
+    margin: 5px;
+}
+
+#returnButton {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 /* .outputData{
