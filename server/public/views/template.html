@@ -3,35 +3,70 @@
     <hr>
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 dropDown">
+            <div class="col-xs dropDown">
                 <select ng-model="vm.templateChoice">
                     <option value="">Template Choice</option>
                     <option ng-repeat="template in vm.templateList.list" value="{{template}}" required>{{template.title}}</option>
                 </select>
             </div>
-            <div class="col-xs-12 dropDown">
+            <div class="col-xs dropDown">
                 <select ng-model="vm.guestChoice">
                     <option value="">Guest List</option>
                     <option ng-repeat="guest in vm.guestList.list" value="{{guest}}">{{guest.firstName + ' ' + guest.lastName}}</option>
                 </select>
             </div>
-            <div class="col-xs-12 dropDown">
+            <div class="col-xs dropDown">
                 <select ng-model="vm.companyChoice">
                     <option value="">Company</option>
                     <option ng-repeat="company in vm.companyList.list" value="{{company}}">{{company.companyName}}</option>
                 </select>
             </div>
-            <div class="col-xs-12">
-                <input type="button" class="btn btn-outline-success btn-sm" value="Generate output" ng-click="vm.generateOutput(vm.templateChoice, vm.guestChoice, vm.companyChoice)"
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 templateButton">
+                <input type="button" class="btn btn-success btn-sm" value="Generate output" ng-click="vm.generateOutput(vm.templateChoice, vm.guestChoice, vm.companyChoice)"
+                />
+            </div>
+            <div class="col-xs-6 templateButton">
+                <input type="button" class="btn btn-primary btn-sm" value="Add template" ng-click="vm.addInputToggle()" />
+                <input type="button" class="btn btn-danger btn-sm" value="Cancel add" ng-hide="vm.showAddInput == false" ng-click="vm.showAddInput = false"
                 />
             </div>
         </div>
     </div>
-    <div class="container outputData">
+    <div class="container outputData" ng-hide="vm.showAddInput == false">
         <div class="row">
-            <div class="col-xs-4">
-                <p>Output: </p>
-                <p>{{vm.output}}</p>
+            <div class="col-sm-12">
+                <p>Enter new template title and message below.</p>
+                <p>
+                    To include guest or company information use the field in { }. Greeting is already included.
+                    <a data-toggle="tooltip" data-placement="right" title="Guest Fields: {firstName}, {lastName}, {guestName}, {roomNumber}. Company Fields: {companyName}, {companyPhone}">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <form>
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" class="form-control" placeholder="Template title" ng-model="newTemplate.title">
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" placeholder="Template message" ng-model="newTemplate.message">
+                        </div>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary mb-2" ng-click="vm.addTemplate(newTemplate)">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container outputData" ng-hide="vm.output == ''">
+        <div class="row">
+            <div>
+                <blockquote>{{vm.output}}</blockquote>
             </div>
         </div>
     </div>

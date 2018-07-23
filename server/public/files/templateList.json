@@ -11,7 +11,7 @@
     {
         "id": 3,
         "title": "Issue Template",
-        "message": "{firstName}. Thank you for letting us know of the issue. We will send someone to you shortly. If you need anything sooner, please call the us at {companyPhone}"
+        "message": "{firstName}. Thank you for letting us know of the issue. We will send someone to you shortly. If you need anything sooner, please call us at {companyPhone}."
     },
     {
         "id": 4,

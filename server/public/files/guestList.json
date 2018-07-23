@@ -2,14 +2,12 @@
         "id": 1,
         "firstName": "Ethan",
         "lastName": "Titor",
-        "phone": "651-222-2223",
         "roomNumber": "304"
     },
     {
         "id": 2,
         "firstName": "Maria",
         "lastName": "Strange",
-        "phone": "763-777-8888",
         "roomNumber": "42"
     }
 ]
