@@ -1,4 +1,4 @@
-app.controller('TemplateController', ['$http', function ($http) {
+app.controller('TemplateController', ['$http', '$filter', function ($http, $filter) {
     console.log('Entering TemplateController');
     let self = this;
 
@@ -39,7 +39,7 @@ app.controller('TemplateController', ['$http', function ($http) {
         console.log('Entering getTemplates function in TemplateController');
         $http({
             method: 'GET',
-            url: './files/templateList.json'
+            url: './files/Templates.json'
         }).then((response) => {
             self.templateList.list = response.data;
             console.log('Templates: ', self.templateList.list);
@@ -53,7 +53,7 @@ app.controller('TemplateController', ['$http', function ($http) {
         console.log('Entering getGuests function in TemplateController');
         $http({
             method: 'GET',
-            url: './files/guestList.json'
+            url: './files/Guests.json'
         }).then((response) => {
             self.guestList.list = response.data;
             console.log('Guests: ', self.guestList.list);
@@ -67,7 +67,7 @@ app.controller('TemplateController', ['$http', function ($http) {
         console.log('Entering getCompanies function in TemplateController');
         $http({
             method: 'GET',
-            url: './files/companyList.json'
+            url: './files/Companies.json'
         }).then((response) => {
             self.companyList.list = response.data;
             console.log('Companies: ', self.companyList.list);
@@ -77,13 +77,14 @@ app.controller('TemplateController', ['$http', function ($http) {
     };
 
     //Function used to create output from templace using templateChoice, guestChoice, and companyChoice.
-    //TODO Refactor method to make more readable + testable
     self.generateOutput = function (templateChoice, guestChoice, companyChoice) {
         //Used to reset newTemplate field and hide from UI.
         self.showAddInput = false;
         console.log('Entering generateOutput function with parameters: ', templateChoice, guestChoice, companyChoice);
         let outputMessage = '';
-        let template, guest, company;
+        let template;
+        let guest;
+        let company;
 
         if (!!templateChoice) {
             self.getGreeting();
@@ -92,27 +93,15 @@ app.controller('TemplateController', ['$http', function ($http) {
 
             if (!!guestChoice) {
                 guest = JSON.parse(guestChoice);
-                outputMessage = outputMessage.replace('{firstName}', guest.firstName);
-                outputMessage = outputMessage.replace('{lastName}', guest.lastName);
-                outputMessage = outputMessage.replace('{phone}', guest.phone);
-                outputMessage = outputMessage.replace('{roomNumber}', guest.roomNumber);
-                outputMessage = outputMessage.replace('{guestName}', guest.firstName + ' ' + guest.lastName);
+                outputMessage = replaceGuestPlaceHolders(outputMessage, guest, true);
             } else {
-                //Use a default value instead of empty string?
-                outputMessage = outputMessage.replace('{firstName}', '');
-                outputMessage = outputMessage.replace('{lastName}', '');
-                outputMessage = outputMessage.replace('{phone}', '');
-                outputMessage = outputMessage.replace('{roomNumber}', '');
-                outputMessage = outputMessage.replace('{guestName}', '');
+                outputMessage = replaceGuestPlaceHolders(outputMessage, guest, false);
             }
             if (!!companyChoice) {
                 company = JSON.parse(companyChoice);
-                outputMessage = outputMessage.replace('{companyName}', company.companyName);
-                outputMessage = outputMessage.replace('{companyPhone}', company.companyPhone);
+                outputMessage = replaceCompanyPlaceHolders(outputMessage, company, true);
             } else {
-                //Use a default value instead of empty string?
-                outputMessage = outputMessage.replace('{companyName}', '');
-                outputMessage = outputMessage.replace('{companyPhone}', '');
+                outputMessage = replaceCompanyPlaceHolders(outputMessage, company, false);
             }
         }
         console.log('Exiting generateOutput function in TemplateController with output message: ', outputMessage);
@@ -142,6 +131,80 @@ app.controller('TemplateController', ['$http', function ($http) {
 
             self.showAddInput = false;
         }
+    }
+
+    //Private function used to parse time from startTimeStamp and endTimeStamp
+    function getTimeFromTimestamp(timestamp) {
+        console.log('Entering getTimeFromTimeStamp function in TemplateController');
+        return $filter('date')(timestamp, "HH:mm");
+    }
+
+    //Private function used to parse date from startTimeStamp and endTimeStamp
+    function getDateFromTimestamp(timestamp) {
+        console.log('Entering getDateFromTimestamp function in TemplateController');
+        return $filter('date')(timestamp, "MM/dd/yyyy");
+    }
+
+    //Private function used to replace placeholders from template
+    function replaceGuestPlaceHolders(message, guest, isGuestValued) {
+        console.log('Entering replaceGuestPlaceHolders function in TemplateController');
+        let mapObj;
+        if (isGuestValued) {
+            mapObj = {
+                '{firstName}': guest.firstName,
+                '{lastName}': guest.lastName,
+                '{phone}': guest.phone,
+                '{roomNumber}': guest.reservation.roomNumber,
+                '{guestName}': guest.firstName + ' ' + guest.lastName,
+                '{startTime}': getTimeFromTimestamp(guest.reservation.startTimestamp),
+                '{startDate}': getDateFromTimestamp(guest.reservation.startTimestamp),
+                '{endTime}': getTimeFromTimestamp(guest.reservation.endTimestamp),
+                '{endDate}': getDateFromTimestamp(guest.reservation.endTimestamp)
+            };
+        } else {
+            //Use a default value instead of empty strings?
+            mapObj = {
+                '{firstName}': '',
+                '{lastName}': '',
+                '{phone}': '',
+                '{roomNumber}': '',
+                '{guestName}': '',
+                '{startTime}': '',
+                '{startDate}': '',
+                '{endTime}': '',
+                '{endDate}': ''
+            };
+        }
+        let replaced = new RegExp(Object.keys(mapObj).join("|"), "gi");
+
+        return message.replace(replaced, function (matched) {
+            return mapObj[matched];
+        })
+    } 
+
+    //Private function used to replace placeholders from template
+    function replaceCompanyPlaceHolders(message, company, isCompanyValued) {
+        console.log('Entering replaceCompanyPlaceHolders function in TemplateController');
+        let mapObj;
+        if (isCompanyValued) {
+            mapObj = {
+                '{company}': company.company,
+                '{city}': company.city,
+                '{timezone}': company.timezone
+            };
+        } else {
+            mapObj = {
+                //Use a default value instead of empty strings?
+                '{company}': '',
+                '{city}': '',
+                '{timezone}': ''
+            };
+        }
+        let replaced = new RegExp(Object.keys(mapObj).join("|"), "gi");
+
+        return message.replace(replaced, function (matched) {
+            return mapObj[matched];
+        })
     }
 
     self.getTemplates();

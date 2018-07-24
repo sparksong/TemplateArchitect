@@ -6,7 +6,7 @@
             <div class="col-xs dropDown">
                 <select ng-model="vm.templateChoice">
                     <option value="">Template Choice</option>
-                    <option ng-repeat="template in vm.templateList.list" value="{{template}}" required>{{template.title}}</option>
+                    <option ng-repeat="template in vm.templateList.list" value="{{template}}">{{template.title}}</option>
                 </select>
             </div>
             <div class="col-xs dropDown">
@@ -18,7 +18,7 @@
             <div class="col-xs dropDown">
                 <select ng-model="vm.companyChoice">
                     <option value="">Company</option>
-                    <option ng-repeat="company in vm.companyList.list" value="{{company}}">{{company.companyName}}</option>
+                    <option ng-repeat="company in vm.companyList.list" value="{{company}}">{{company.company}}</option>
                 </select>
             </div>
         </div>
@@ -39,17 +39,17 @@
     <div class="container outputData" ng-hide="vm.showAddInput == false">
         <div class="row">
             <div class="col-sm-12">
-                <p>Enter new template title and message below.</p>
+                <p>Enter new template title and message below. (Greeting is included at the start of the message.)</p>
                 <p>
-                    To include guest or company information use the field in { }. Greeting is already included.
-                    <a data-toggle="tooltip" data-placement="right" title="Guest Fields: {firstName}, {lastName}, {guestName}, {roomNumber}. Company Fields: {companyName}, {companyPhone}">
+                    To include guest or company information use the field in { }.
+                    <a data-toggle="tooltip" data-placement="right" title="Guest Fields: {firstName}, {lastName}, {guestName}, {roomNumber}, {startTime}, {startDate}, {endTime}, {endDate}. Company Fields: {company}, {city}, {timezone}">
                         <i class="fas fa-info-circle"></i>
                     </a>
                 </p>
             </div>
             <div class="col-sm-12">
-                <form>
-                    <div class="form-row">
+                <form ng-submit="onSubmit(newTemplate); newTemplate='';">
+                    <div id="templateForm" class="form-row">
                         <div class="col">
                             <input type="text" class="form-control" placeholder="Template title" ng-model="newTemplate.title">
                         </div>
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary mb-2" ng-click="vm.addTemplate(newTemplate)">Submit</button>
+                    <button type="submit" class="btn btn-primary mb-2" ng-click="vm.addTemplate(newTemplate)">Submit template</button>
                 </form>
             </div>
         </div>
