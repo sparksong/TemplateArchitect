@@ -26,6 +26,6 @@
     {
         "id": 6,
         "title": "Test All",
-        "message": "{lastName}, {guestName}. Or may I call you {firstName}? Your room is {roomNumber} at {company}.. in {city}. The time zone you are in is {timezone}. Why do you ask? {startTime} {startDate} {endTime} {endDate}. Pardon me."
+        "message": "First name: {firstName}, Last name: {lastName}, Full name: {guestName}, Room number: {roomNumber}, Company: {company}, City: {city}, Time zone: {timezone}. Parsed from timestamp in reservation: Start time: {startTime}, Start date: {startDate}, End time: {endTime}, End date: {endDate}."
     }
 ]

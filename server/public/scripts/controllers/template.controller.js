@@ -163,6 +163,7 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
         return $filter('date')(timestamp, "MM/dd/yyyy");
     }
 
+    //Empty values from Guest / Company information currently empty strings. Possibly add default values instead?
     //Private function used to replace placeholders from template
     function replacePlaceHolders(message, guest, company) {
         console.log('Entering replacePlaceHolders function in TemplateController');
