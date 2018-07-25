@@ -1,23 +1,25 @@
 <div class="container containerBorder">
+    <div id="alert" uib-alert ng-repeat="alert in vm.alerts" ng-class="'alert-' + (alert.type || 'warning')" close="vm.closeAlert($index)"
+        dismiss-on-timeout="5000">{{alert.msg}}</div>
     <h3 class="centered">Choose a template</h3>
     <hr>
     <div class="container">
         <div class="row">
-            <div class="col-xs dropDown">
+            <div class="col-12 dropDown">
                 <select ng-model="vm.templateChoice">
-                    <option value="">Template Choice</option>
+                    <option value="">Choose a template</option>
                     <option ng-repeat="template in vm.templateList.list" value="{{template}}">{{template.title}}</option>
                 </select>
             </div>
-            <div class="col-xs dropDown">
+            <div class="col-12 dropDown">
                 <select ng-model="vm.guestChoice">
-                    <option value="">Guest List</option>
+                    <option value="">Guest list</option>
                     <option ng-repeat="guest in vm.guestList.list" value="{{guest}}">{{guest.firstName + ' ' + guest.lastName}}</option>
                 </select>
             </div>
-            <div class="col-xs dropDown">
+            <div class="col-12 dropDown">
                 <select ng-model="vm.companyChoice">
-                    <option value="">Company</option>
+                    <option value="">Company list</option>
                     <option ng-repeat="company in vm.companyList.list" value="{{company}}">{{company.company}}</option>
                 </select>
             </div>
@@ -39,22 +41,28 @@
     <div class="container outputData" ng-hide="vm.showAddInput == false">
         <div class="row">
             <div class="col-sm-12">
-                <p>Enter new template title and message below. (Greeting is included at the start of the message.)</p>
+                <p>Enter new template title and message below.</p>
                 <p>
-                    To include guest or company information use the field in { }.
-                    <a data-toggle="tooltip" data-placement="right" title="Guest Fields: {firstName}, {lastName}, {guestName}, {roomNumber}, {startTime}, {startDate}, {endTime}, {endDate}. Company Fields: {company}, {city}, {timezone}">
+                    Guest fields:
+                    <a data-toggle="tooltip" data-placement="right" title="{firstName}, {lastName}, {guestName}, {roomNumber}, {startTime}, {startDate}, {endTime}, {endDate}">
+                        <i class="fas fa-info-circle"></i>
+                    </a>
+                    Company fields:
+                    <a data-toggle="tooltip" data-placement="right" title="{company}, {city}, {timezone}">
                         <i class="fas fa-info-circle"></i>
                     </a>
                 </p>
             </div>
             <div class="col-sm-12">
-                <form ng-submit="onSubmit(newTemplate); newTemplate='';">
+                <form ng-submit="onSubmit(newTemplate.title, newTemplate.message); newTemplate.title=''; newTemplate.message='';">
                     <div id="templateForm" class="form-row">
                         <div class="col">
-                            <input type="text" class="form-control" placeholder="Template title" ng-model="newTemplate.title">
+                            <input type="text" class="form-control" placeholder="Title" maxlength="30" ng-model="newTemplate.title" required>
+                            <span class="textCount">{{30 - newTemplate.title.length}} left</span>
                         </div>
                         <div class="col-8">
-                            <input type="text" class="form-control" placeholder="Template message" ng-model="newTemplate.message">
+                            <input type="text" class="form-control" placeholder="Message" maxlength="300" ng-model="newTemplate.message" required>
+                            <span class="textCount">{{300 - newTemplate.message.length}} left</span>
                         </div>
                     </div>
                     <br>
@@ -65,8 +73,8 @@
     </div>
     <div class="container outputData" ng-hide="vm.output == ''">
         <div class="row">
-            <div>
-                <blockquote>{{vm.output}}</blockquote>
+            <div style='word-break: break-all;'>
+                {{vm.output}}
             </div>
         </div>
     </div>

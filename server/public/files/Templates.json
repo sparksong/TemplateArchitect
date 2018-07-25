@@ -21,6 +21,11 @@
     {
         "id": 5,
         "title": "Bad Weather Template",
-        "message": ", this is a message to inform all guests of the inclement weather currently. Please use caution if you are going out. Thank you and have a great night!"
+        "message": "this is a message to inform all guests of the inclement weather currently. Please use caution if you are going out. Thank you and have a great night!"
+    },
+    {
+        "id": 6,
+        "title": "Test All",
+        "message": "{lastName}, {guestName}. Or may I call you {firstName}? Your room is {roomNumber} at {company}.. in {city}. The time zone you are in is {timezone}. Why do you ask? {startTime} {startDate} {endTime} {endDate}. Pardon me."
     }
 ]

@@ -13,26 +13,15 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
         list: []
     };
 
+    //Array used to show error / success messages when they occur.
+    self.alerts = [];
+
+    //Greeting used - varies depending on time of day.
     self.greeting = '';
+    //Output for generated message built from template
     self.output = '';
+    //boolean used for showing and hiding add template section
     self.showAddInput = false;
-
-    //Function used to set greeting based on hour of day.
-    self.getGreeting = function () {
-        console.log('Entering getGreeting function in TemplateController');
-        let currentDate = new Date();
-        let hours = currentDate.getHours();
-        let greeting;
-
-        if (hours < 12) {
-            greeting = 'Good morning ';
-        } else if (hours >= 12 && hours <= 17) {
-            greeting = 'Good afternoon ';
-        } else {
-            greeting = 'Good evening ';
-        }
-        self.greeting = greeting;
-    };
 
     //Function used to get template information
     self.getTemplates = function () {
@@ -78,34 +67,32 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
 
     //Function used to create output from templace using templateChoice, guestChoice, and companyChoice.
     self.generateOutput = function (templateChoice, guestChoice, companyChoice) {
-        //Used to reset newTemplate field and hide from UI.
-        self.showAddInput = false;
         console.log('Entering generateOutput function with parameters: ', templateChoice, guestChoice, companyChoice);
-        let outputMessage = '';
-        let template;
-        let guest;
-        let company;
+        //Used to reset output field and newTemplate field and hide from UI.
+        self.showAddInput = false;
+        self.output = ''
 
         if (!!templateChoice) {
-            self.getGreeting();
-            template = JSON.parse(templateChoice);
-            outputMessage = self.greeting + template.message;
-
             if (!!guestChoice) {
-                guest = JSON.parse(guestChoice);
-                outputMessage = replaceGuestPlaceHolders(outputMessage, guest, true);
+                if (!!companyChoice) {
+                    let template = JSON.parse(templateChoice);
+                    let guest = JSON.parse(guestChoice);
+                    let company = JSON.parse(companyChoice);
+
+                    let outputMessage = getGreeting() + template.message;
+                    outputMessage = replacePlaceHolders(outputMessage, guest, company);
+
+                    self.output = outputMessage;
+                } else {
+                    setAlert('danger', 'Please choose a company from the company list to continue.');
+                }
             } else {
-                outputMessage = replaceGuestPlaceHolders(outputMessage, guest, false);
+                setAlert('danger', 'Please choose a guest from the guest list to continue.');
             }
-            if (!!companyChoice) {
-                company = JSON.parse(companyChoice);
-                outputMessage = replaceCompanyPlaceHolders(outputMessage, company, true);
-            } else {
-                outputMessage = replaceCompanyPlaceHolders(outputMessage, company, false);
-            }
+        } else {
+            setAlert('danger', 'You must first choose a template before you can generate output. Please try again.');
         }
         console.log('Exiting generateOutput function in TemplateController with output message: ', outputMessage);
-        self.output = outputMessage;
     };
 
     //Function that shows input field when add is clicked in template view to create new template. Clearing output as well to hide output div.
@@ -118,20 +105,53 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
     //Function used to submit new template to templateList
     self.addTemplate = function (template) {
         console.log('Entering addTemplate function in TemplateController with template: ', template);
-        if (template.message.length > 0 && template.title.length > 0) {
+        if (!!template && !!template.message && !!template.title) {
             let newTemplate = {
                 'id': ' ',
                 'title': template.title,
                 'message': template.message
             };
-
-            console.log(newTemplate);
+            console.log('Adding new template to template list: ', newTemplate);
 
             self.templateList.list.push(newTemplate);
 
             self.showAddInput = false;
+            setAlert('success', 'Successfully added new template!');
+        } else {
+            setAlert('warning', 'You must fill out both title and message fields to add a new template! Please try again.');
         }
+        console.log('Exiting addInputToggle function in TemplateController');
     }
+
+    //Function used to close alert box.
+    self.closeAlert = function (index) {
+        self.alerts.splice(index, 1);
+    };
+
+    //Private function used to success / error messages on the UI
+    function setAlert(type, message) {
+        self.alerts[0] = {
+            type: type,
+            msg: message
+        };
+    };
+
+    //Private function used to set greeting based on hour of day.
+    function getGreeting() {
+        console.log('Entering getGreeting function in TemplateController');
+        let currentDate = new Date();
+        let hours = currentDate.getHours();
+        let greeting;
+
+        if (hours < 12) {
+            greeting = 'Good morning ';
+        } else if (hours >= 12 && hours <= 17) {
+            greeting = 'Good afternoon ';
+        } else {
+            greeting = 'Good evening ';
+        }
+        return greeting;
+    };
 
     //Private function used to parse time from startTimeStamp and endTimeStamp
     function getTimeFromTimestamp(timestamp) {
@@ -146,60 +166,23 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
     }
 
     //Private function used to replace placeholders from template
-    function replaceGuestPlaceHolders(message, guest, isGuestValued) {
-        console.log('Entering replaceGuestPlaceHolders function in TemplateController');
-        let mapObj;
-        if (isGuestValued) {
-            mapObj = {
-                '{firstName}': guest.firstName,
-                '{lastName}': guest.lastName,
-                '{phone}': guest.phone,
-                '{roomNumber}': guest.reservation.roomNumber,
-                '{guestName}': guest.firstName + ' ' + guest.lastName,
-                '{startTime}': getTimeFromTimestamp(guest.reservation.startTimestamp),
-                '{startDate}': getDateFromTimestamp(guest.reservation.startTimestamp),
-                '{endTime}': getTimeFromTimestamp(guest.reservation.endTimestamp),
-                '{endDate}': getDateFromTimestamp(guest.reservation.endTimestamp)
-            };
-        } else {
-            //Use a default value instead of empty strings?
-            mapObj = {
-                '{firstName}': '',
-                '{lastName}': '',
-                '{phone}': '',
-                '{roomNumber}': '',
-                '{guestName}': '',
-                '{startTime}': '',
-                '{startDate}': '',
-                '{endTime}': '',
-                '{endDate}': ''
-            };
-        }
-        let replaced = new RegExp(Object.keys(mapObj).join("|"), "gi");
+    function replacePlaceHolders(message, guest, company) {
+        console.log('Entering replacePlaceHolders function in TemplateController');
+        let mapObj = {
+            '{firstName}': guest.firstName,
+            '{lastName}': guest.lastName,
+            '{phone}': guest.phone,
+            '{roomNumber}': guest.reservation.roomNumber,
+            '{guestName}': guest.firstName + ' ' + guest.lastName,
+            '{startTime}': getTimeFromTimestamp(guest.reservation.startTimestamp),
+            '{startDate}': getDateFromTimestamp(guest.reservation.startTimestamp),
+            '{endTime}': getTimeFromTimestamp(guest.reservation.endTimestamp),
+            '{endDate}': getDateFromTimestamp(guest.reservation.endTimestamp),
+            '{company}': company.company,
+            '{city}': company.city,
+            '{timezone}': company.timezone
+        };
 
-        return message.replace(replaced, function (matched) {
-            return mapObj[matched];
-        })
-    } 
-
-    //Private function used to replace placeholders from template
-    function replaceCompanyPlaceHolders(message, company, isCompanyValued) {
-        console.log('Entering replaceCompanyPlaceHolders function in TemplateController');
-        let mapObj;
-        if (isCompanyValued) {
-            mapObj = {
-                '{company}': company.company,
-                '{city}': company.city,
-                '{timezone}': company.timezone
-            };
-        } else {
-            mapObj = {
-                //Use a default value instead of empty strings?
-                '{company}': '',
-                '{city}': '',
-                '{timezone}': ''
-            };
-        }
         let replaced = new RegExp(Object.keys(mapObj).join("|"), "gi");
 
         return message.replace(replaced, function (matched) {
@@ -207,6 +190,7 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
         })
     }
 
+    //Initializing dropdowns with Template, Guest, and Company information.
     self.getTemplates();
     self.getGuests();
     self.getCompanies();
