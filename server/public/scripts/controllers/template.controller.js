@@ -92,7 +92,6 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
         } else {
             setAlert('danger', 'You must first choose a template before you can generate output. Please try again.');
         }
-        console.log('Exiting generateOutput function in TemplateController with output message: ', outputMessage);
     };
 
     //Function that shows input field when add is clicked in template view to create new template. Clearing output as well to hide output div.
@@ -120,7 +119,6 @@ app.controller('TemplateController', ['$http', '$filter', function ($http, $filt
         } else {
             setAlert('warning', 'You must fill out both title and message fields to add a new template! Please try again.');
         }
-        console.log('Exiting addInputToggle function in TemplateController');
     }
 
     //Function used to close alert box.
